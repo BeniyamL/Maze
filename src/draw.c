@@ -1,19 +1,7 @@
 #include "../headers/header.h"
 
 player_t player;
-/**
-int map[] = {
-	1, 1, 1, 1, 1, 1, 1, 1,
-        1, 0, 1, 0, 0, 0, 0, 1,
-        1, 0, 1, 0, 0, 0, 0, 1,
-        1, 0, 1, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 1, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 1,
-        1, 1, 1, 1, 1, 1, 1, 1,
- };
-**/
-int map[map_x][map_y] = {
+int map[map_y][map_x] = {
 	{1, 1, 1, 1, 1, 1, 1, 1},
 	{1, 0, 1, 0, 0, 0, 0, 1},
 	{1, 0, 1, 0, 0, 0, 0, 1},
@@ -33,14 +21,8 @@ int map[map_x][map_y] = {
  **/
 int getmap_value(int x, int y)
 {
-	return (map[x][y]);
+	return (map[y][x]);
 }
-/**
-int getmap_value(int p)
-{
-        return (map[p]);
-}
-**/
 /**
  * display - function to display the game
  * @instance: the given sdl2 instance
@@ -70,9 +52,7 @@ void display_player(SDL_Instance instance)
 	SDL_SetRenderDrawColor(instance.ren, 255, 255, 0, 0);
 	SDL_RenderFillRect(instance.ren, &rect);
 
-	//x0 = player.x + player.w;
 	x0 = player.x;
-	//y0 = player.y + player.h / 2;
 	y0 = player.y;
 	x1 = player.x + player.dx * 20;
 	y1 = player.y + player.dy * 20;
@@ -106,27 +86,6 @@ void draw_map(SDL_Instance ins)
 }
 
 /**
-void draw_map(SDL_Instance ins)
-{
-        int x, y;
-        SDL_Rect rect;
-
-        for (y = 0; y < map_y; y++)
-        {
-                for (x = 0; x < map_x; x++)
-                {
-                        if (map[y * map_x + x] == 1)
-                                SDL_SetRenderDrawColor(ins.ren, 255, 255, 255, 0);
-                        else
-                                SDL_SetRenderDrawColor(ins.ren, 0, 0, 0, 0);
-                        rect.x = (x * map_s) + 1, rect.y = (y * map_s) + 1;
-                        rect.w = map_s - 1, rect.h = map_s - 1;
-                        SDL_RenderFillRect(ins.ren, &rect);
-                }
-        }
-}
-**/
-/**
  * draw_scene - function to draw the scene
  * @ins: the given instance
  * @n: the ray number
@@ -137,14 +96,15 @@ void draw_map(SDL_Instance ins)
  **/
 void draw_scene(SDL_Instance ins, int n, float h, float ray_a)
 {
-	//float line = (map_s * 320) / h, a = FixAng(player.a - ray_a);
-	float line = (map_s * 320) / h, a = FixAng(player.a - ray_a);
-	float of = 160 - (line / 2);
+	float line, a, of;
+	int j;
 
-	//h = h * cos(degToRad(a));
+	a = FixAng(player.a - ray_a);
 	h = h * cos(a);
+	line = (map_s * 320) / h;
+	of = 160 - (line / 2);
 	if (line > 320)
 		line = 320;
-	//SDL_RenderSetScale(ins.ren, 1.5, 1.5);
-	SDL_RenderDrawLine(ins.ren, n * 8 + 530, of, n * 8 + 530, line + of);
+	for (j = n * 8; j < (n * 8) + 8; j++)
+		SDL_RenderDrawLine(ins.ren, j + 530, of, j + 530, line + of);
 }

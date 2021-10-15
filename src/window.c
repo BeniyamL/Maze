@@ -1,8 +1,7 @@
 #include "../headers/header.h"
 
 player_t player;
-static int key_pressed = 0;
-static int start = 1;
+
 /**
  * init_instance - intialize all instance
  * @in: the given instance
@@ -79,54 +78,32 @@ int poll_events(SDL_Instance ins)
 void handle_key_down(SDL_Event ev, SDL_Instance ins)
 {
 	if (ev.key.keysym.sym == SDLK_LEFT ||
-                ev.key.keysym.sym == SDLK_a)
+		ev.key.keysym.sym == SDLK_a)
 	{
-		/**
-		player.a -= 5;
-		player.a = FixAng(player.a);
-		player.dx = cos(degToRad(player.a));
-		player.dy = -sin(degToRad(player.a));
-		**/
 		player.a -= 0.1;
-                player.a = FixAng(player.a);
-                player.dx = cos(player.a) * 5;
-                player.dy = sin(player.a) * 5;
-
-		printf("a=%f dx=%f dy=%f\n", player.a, player.dx, player.dy);
-		key_pressed = 1;
+		player.a = FixAng(player.a);
+		player.dx = cos(player.a) * 5;
+		player.dy = sin(player.a) * 5;
 	}
 	else if (ev.key.keysym.sym == SDLK_RIGHT ||
 		ev.key.keysym.sym == SDLK_d)
 	{
-		/**
-		player.a += 5;
-		player.a = FixAng(player.a);
-		player.dx = cos(degToRad(player.a));
-		player.dy = -sin(degToRad(player.a));
-		**/
 		player.a += 0.1;
-                player.a = FixAng(player.a);
-                player.dx = cos(player.a) * 5;
-                player.dy = sin(player.a) *5 ;
-
-		printf("a=%f dx=%f dy=%f\n", player.a, player.dx, player.dy);
-		key_pressed = 1;
+		player.a = FixAng(player.a);
+		player.dx = cos(player.a) * 5;
+		player.dy = sin(player.a) * 5;
 	}
 	else if (ev.key.keysym.sym == SDLK_UP ||
 		ev.key.keysym.sym == SDLK_w)
 	{
 		player.x += player.dx * 5;
 		player.y += player.dy * 5;
-		printf("a=%f x=%f y=%f\n", player.a, player.x, player.y);
-		key_pressed = 1;
 	}
 	else if (ev.key.keysym.sym == SDLK_DOWN ||
 		ev.key.keysym.sym == SDLK_s)
 	{
 		player.x -= player.dx * 5;
 		player.y -= player.dy * 5;
-		printf("a=%f x=%f y=%f\n", player.a, player.x, player.y);
-		key_pressed = 1;
 	}
 	SDL_SetRenderDrawColor(ins.ren, 76, 76, 76, 0);
 	SDL_RenderClear(ins.ren);
@@ -140,67 +117,25 @@ void handle_key_down(SDL_Event ev, SDL_Instance ins)
  **/
 void init_game(void)
 {
-	/**
-	player.x = 150;
-	player.y = 400;
+	player.x = 300;
+	player.y = 300;
 	player.w = 12;
 	player.h = 12;
-	player.a = 90;
-	player.dx = cos(degToRad(player.a));
-	player.dy = -sin(degToRad(player.a));
-	**/
-	player.x = 300;
-        player.y = 300;
-        player.w = 12;
-        player.h = 12;
-        player.a = 0;
-        player.dx = cos(player.a) * 5;
-        player.dy = sin(player.a) * 5;
-
+	player.a = 0;
+	player.dx = cos(player.a) * 5;
+	player.dy = sin(player.a) * 5;
 }
-float degToRad(int a)
-{
-	return (a * PI) / 180.0;
-}
-//int FixAng(int a)
+/**
+ * FixAng - reset the angle if it is above the range
+ * @a: the given angle
+ *
+ * Return: the converted angle
+ **/
 float FixAng(float a)
 {
-	/**
-	if(a > 359)
-		a -=360;
+	if (a > 2 * PI)
+		a -= 2 * PI;
 	if (a < 0)
-		a += 360;
-	return a;
-	**/
-	if(a > 2 * PI)
-                a -= 2 * PI;
-        if (a < 0)
-                a += 2 * PI;
-        return a;
+		a += 2 * PI;
+	return (a);
 }
-int hit_wall(float rx, float ry)
-{
-        int mx, my, mp;
-        if (rx < 0 || rx >= map_x * map_s || ry < 0 || ry >= map_y * map_s)
-        {
-		start = 0;
-		key_pressed = 0;
-	        return(1);
-	}
-        mx = (int)(player.x)>>6;
-        my = (int)(player.y)>>6;
-        mp = my * map_x + mx;
-        if (key_pressed == 1 || start == 1)
-        {
-                printf("a=%f rx=%f mx=%d, ry=%f my=%d\n", player.a, rx, mx, ry, my);
-        }
-        if (mp > 0 && mp < map_x * map_y && getmap_value(mx, my) != 0)
-        {
-		start = 0;
-		key_pressed = 0;
-		return(1);
-	}
-        else
-                return(0);
-}
-

@@ -7,8 +7,8 @@
 #define map_y 8
 #define map_s 64
 #define PI 3.14159265
-#define PI2 0.5 * PI
-#define PI3 1.5 * PI
+#define PI2 (0.5 * PI)
+#define PI3 (1.5 * PI)
 #define DR 0.0174533
 
 #include <stdlib.h>
@@ -57,7 +57,6 @@ void handle_key_down(SDL_Event event, SDL_Instance instance);
 int init_instance(SDL_Instance *in);
 void init_game(void);
 float degToRad(int a);
-//int FixAng(int a);
 float FixAng(float a);
 
 /** draw **/
@@ -65,7 +64,6 @@ void display(SDL_Instance instance);
 void display_player(SDL_Instance instance);
 void draw_map(SDL_Instance ins);
 int getmap_value(int x, int y);
-//int getmap_value(int m);
 void draw_scene(SDL_Instance ins, int n, float h, float ray_a);
 
 /** cast **/
@@ -73,7 +71,6 @@ void ray_cast(SDL_Instance ins);
 int hit_wall(float rx, float ry);
 void horizontal_collision(float ray_a, float *hd, float *hx, float *hy);
 void vertical_collision(float ray_a, float *vd, float *vx, float *vy);
-//float find_distance(float ax, float ay, float bx, float by, float a);
 float find_distance(float ax, float ay, float bx, float by);
 
 /** get_altitude **/
