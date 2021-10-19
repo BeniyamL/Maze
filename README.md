@@ -17,7 +17,7 @@ The goal of this project is to create a game in 3D using raycasting. Ray-casting
     * Your entire repository will be checked using Betty
    
 <p align="center">
-    <img src="https://github.com/BeniyamL/Maze/images/m3.png">
+    <img src="https://github.com/BeniyamL/Maze/blob/master/images/m3.png">
 </p>
 
 ## Task 0. Walls !
