@@ -3,6 +3,7 @@
 ## Desciption
 
 The goal of this project is to create a game in 3D using raycasting. Ray-casting is a techniques that transform a limited form of data (a very simplified map or floor plan) into a 3D projection by tracing rays from the view point into the viewing volume.
+
 ![maze using raycasting](/images/m1.png)
 
 ## General Requirements
@@ -16,7 +17,8 @@ The goal of this project is to create a game in 3D using raycasting. Ray-casting
     * Your entire repository will be checked using Betty
    
 
-![moved maze](/images/m3.png)
+                     ![moved maze](/images/m3.png)
+
 ## Task 0. Walls !
     * Create a window with SDL2
     * Use raycasting to draw walls on your window !
@@ -82,9 +84,7 @@ The goal of this project is to create a game in 3D using raycasting. Ray-casting
    * Download the source file from the githbub.com into your local machine
    * naviagete to the Maze folder
    * compile all source doe ending with .c extension using the following flag
----
-gcc -Wall -Werror -Wextra -pedantic ./src/*.c -lm $(sdl2-config --cflags --libs) -o maze
----
+       gcc -Wall -Werror -Wextra -pedantic ./src/*.c -lm $(sdl2-config --cflags --libs) -o maze
    * launch the executable file like ./maze
    * the system then displays the map & the game zone on the screen
    * Press Upper arrow key or w key to move the player to upper positon
@@ -109,5 +109,5 @@ window            | a c file which contains method used to define the window and
 --- 
 
 
-##Author
+## Author
 Beniyam Legesse(https://github.com/BeniyamL)
