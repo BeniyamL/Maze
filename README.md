@@ -16,8 +16,9 @@ The goal of this project is to create a game in 3D using raycasting. Ray-casting
     * No more than 5 functions per file
     * Your entire repository will be checked using Betty
    
-
-                     ![moved maze](/images/m3.png)
+<p align="center">
+    <img src="https://github.com/BeniyamL/Maze/images/m3.png">
+</p>
 
 ## Task 0. Walls !
     * Create a window with SDL2
