@@ -51,27 +51,38 @@ typedef struct player_s
 
 extern player_t player;
 
+/** main.c **/
+void init_game(void);
+void display(SDL_Instance instance);
+
 /** window **/
 int poll_events(SDL_Instance instance);
 void handle_key_down(SDL_Event event, SDL_Instance instance);
 int init_instance(SDL_Instance *in);
-void init_game(void);
-float degToRad(int a);
+void handle_door(void);
 float FixAng(float a);
 
 /** draw **/
-void display(SDL_Instance instance);
 void display_player(SDL_Instance instance);
 void draw_map(SDL_Instance ins);
-int getmap_value(int x, int y);
-void draw_scene(SDL_Instance ins, int n, float h, float ray_a);
+void draw_scene(SDL_Instance ins, int n, float h, float ray_a, float shade,
+		float rx, float ry, int m_txr);
+void draw_floor(SDL_Instance ins, float ln_off, int n, float line, float ra);
+void draw_roof(SDL_Instance ins, float ln_off, int n, float line, float ra);
 
 /** cast **/
 void ray_cast(SDL_Instance ins);
 int hit_wall(float rx, float ry);
-void horizontal_collision(float ray_a, float *hd, float *hx, float *hy);
-void vertical_collision(float ray_a, float *vd, float *vx, float *vy);
+void horizontal_collision(float ray_a, float *d, float *hx, float *hy, int *h);
+void vertical_collision(float ray_a, float *vd, float *vx, float *vy, int *v);
 float find_distance(float ax, float ay, float bx, float by);
+
+/** texture **/
+float get_texture(int idx);
+
+/** map **/
+void setmap_value(int mx, int my, int val);
+int getmap_value(int x, int y, int mp);
 
 /** get_altitude **/
 int _atoi(char *s);

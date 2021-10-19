@@ -30,3 +30,32 @@ int main(void)
 	return (0);
 }
 
+/**
+ * display - function to display the game
+ * @instance: the given sdl2 instance
+ *
+ * Return: nothing
+ **/
+void display(SDL_Instance instance)
+{
+	draw_map(instance);
+	ray_cast(instance);
+	display_player(instance);
+}
+
+/**
+ * init_game - function to initialize the game
+ *
+ * Return: nothing
+ **/
+void init_game(void)
+{
+	player.x = 150;
+	player.y = 400;
+	player.w = 12;
+	player.h = 12;
+	player.a = PI3;
+	player.dx = cos(player.a) * 5;
+	player.dy = sin(player.a) * 5;
+}
+

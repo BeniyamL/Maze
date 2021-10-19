@@ -1,41 +1,6 @@
 #include "../headers/header.h"
 
 player_t player;
-int map[map_y][map_x] = {
-	{1, 1, 1, 1, 1, 1, 1, 1},
-	{1, 0, 1, 0, 0, 0, 0, 1},
-	{1, 0, 1, 0, 0, 0, 0, 1},
-	{1, 0, 1, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 0, 1, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 1},
-	{1, 1, 1, 1, 1, 1, 1, 1},
-	};
-
-/**
- * getmap_value - find the value of the map at agiven coordinate
- * @x: x-coordinate
- * @y: y-coordinate
- *
- * Return: the value at x,y
- **/
-int getmap_value(int x, int y)
-{
-	return (map[y][x]);
-}
-/**
- * display - function to display the game
- * @instance: the given sdl2 instance
- *
- * Return: nothing
- **/
-void display(SDL_Instance instance)
-{
-	draw_map(instance);
-	ray_cast(instance);
-	display_player(instance);
-}
-
 /**
  * display_player - function to display the player
  * @instance: the given sdl2 instance
@@ -74,7 +39,7 @@ void draw_map(SDL_Instance ins)
 	{
 		for (y = 0; y < map_y; y++)
 		{
-			if (map[x][y] == 1)
+			if (getmap_value(y, x, 0) > 0)
 				SDL_SetRenderDrawColor(ins.ren, 255, 255, 255, 0);
 			else
 				SDL_SetRenderDrawColor(ins.ren, 0, 0, 0, 0);
@@ -91,20 +56,115 @@ void draw_map(SDL_Instance ins)
  * @n: the ray number
  * @h: the height
  * @ray_a: the angle of the ray
+ * @shd: the shading value
+ * @rx: the x coordinate of the ray
+ * @ry: the y coordinate of the ray
+ * @m_txr: the map texture value
  *
  * Return: nothing
  **/
-void draw_scene(SDL_Instance ins, int n, float h, float ray_a)
+void draw_scene(SDL_Instance ins, int n, float h, float ray_a, float shd,
+		float rx, float ry, int m_txr)
 {
-	float line, a, of;
-	int j;
+	float line, a = FixAng(player.a - ray_a), of, tx_y = 0, tx_x, tx_s, c;
+	int j, i, idx;
 
-	a = FixAng(player.a - ray_a);
 	h = h * cos(a);
-	line = (map_s * 320) / h;
-	of = 160 - (line / 2);
-	if (line > 320)
-		line = 320;
-	for (j = n * 8; j < (n * 8) + 8; j++)
-		SDL_RenderDrawLine(ins.ren, j + 530, of, j + 530, line + of);
+	line = (map_s * 350) / h;
+	tx_s = 32.0 / (float)line;
+	of = 200 - (line / 2);
+	if (line > 350)
+		line = 350, tx_y = (line - 350) / 2.0;
+	tx_y = (tx_y * tx_s) + (m_txr * 32);
+	if (shd == 1)
+	{
+		tx_x = (int) (rx / 2.0) % 32;
+		if (ray_a > PI)
+			tx_x = 31 - tx_x;
+	}
+	else
+	{
+		tx_x = (int) (ry / 2.0) % 32;
+		if (ray_a > PI2 && ray_a < PI3)
+			tx_x = 31 - tx_x;
+	}
+	for (i = 0; i < line; i++)
+	{
+		idx = (int)(tx_y) * 32 + (int)tx_x;
+		c = (get_texture(idx) * 255) * shd;
+		if (m_txr == 0)
+			SDL_SetRenderDrawColor(ins.ren, c, c / 2.0, c / 2.0, 0);
+		if (m_txr == 1)
+			SDL_SetRenderDrawColor(ins.ren, c, c, c / 2.0, 0);
+		if (m_txr == 2)
+			SDL_SetRenderDrawColor(ins.ren, c / 2.0, c / 2.0, c, 0);
+		if (m_txr == 3)
+			SDL_SetRenderDrawColor(ins.ren, c / 2.0, c, c / 2.0, 0);
+		for (j = n * 8; j < (n * 8) + 8; j++)
+			SDL_RenderDrawPoint(ins.ren, j + 530, i + of);
+		tx_y += tx_s;
+	}
+	draw_floor(ins, of, n, line, ray_a);
+	/** draw_roof(ins, of, n, line, ray_a); **/
+}
+/**
+ * draw_floor - function to draw a floor)
+ * @ln_off: the line offset
+ * @line: the vertical line
+ * @ra: the ray angle
+ * @n: the index of each ray
+ * @ins: the given instance
+ *
+ * Return: nothing
+ **/
+void draw_floor(SDL_Instance ins, float ln_off, int n, float line, float ra)
+{
+	int i, j, idx;
+	/** int mp **/
+	float dy, fix, tx_x, tx_y, clr, pa = player.a;
+
+	for (i = ln_off + line; i < 520; i++)
+	{
+		dy = i - (520 / 2.0), fix = cos(FixAng(pa - ra));
+		tx_x = player.x / 2.0 + cos(ra) * 158 * 32 / dy / fix;
+		tx_y = player.y / 2.0 - sin(ra) * 158 * 32 / dy / fix;
+		/**
+		*mp = (int)(tx_y / 32.0);
+		*mp = getmap_value((int)(tx_x / 32.0), mp, 1) * 32 * 32;
+		*idx = ((int)(tx_y)&31) * 32 + ((int)(tx_x) & 31) + mp;
+		**/
+		idx = ((int)(tx_y) & 31) * 32 + ((int)(tx_x) & 31);
+		clr = (get_texture(idx) * 255) * 0.7;
+		SDL_SetRenderDrawColor(ins.ren, clr / 1.3, clr / 1.3, clr, 0);
+		for (j = n * 8; j < (n * 8) + 8; j++)
+			SDL_RenderDrawPoint(ins.ren, j + 530, i);
+	}
+}
+
+/**
+ * draw_roof - function to draw a roof)
+ * @ln_off: the line offset
+ * @line: the vertical line
+ * @ra: the ray angle
+ * @ins: the given instance
+ * @n: the index of each ray
+ *
+ * Return: nothing
+ **/
+void draw_roof(SDL_Instance ins, float ln_off, int n, float line, float ra)
+{
+	int i, j, idx;
+	float dy, fix, tx_x, tx_y, c, pa = player.a;
+
+	for (i = ln_off + line; i < 500; i++)
+	{
+		dy = i - (500 / 2.0), fix = cos(FixAng(pa - ra));
+		tx_x = player.x / 2.0 + cos(ra) * 158 * 32 / dy / fix;
+		tx_y = player.y / 2.0 - sin(ra) * 158 * 32 / dy / fix;
+		idx = ((int)(tx_y) & 31) * 32 + ((int)(tx_x) & 31);
+		c = (get_texture(idx) * 255) * 0.7;
+		SDL_SetRenderDrawColor(ins.ren, c / 2.0, c / 1.2, c / 2.0, 0);
+		for (j = n * 8; j < (n * 8) + 8; j++)
+			SDL_RenderDrawPoint(ins.ren, j + 530, 500 - i);
+	}
 }
