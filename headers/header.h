@@ -1,8 +1,8 @@
 #ifndef Demo_h
 #define Demo_h
 
-#define SCREEN_WIDTH 1024
-#define SCREEN_HEIGHT 512
+#define SCREEN_WIDTH 1080
+#define SCREEN_HEIGHT 600
 #define map_x 8
 #define map_y 8
 #define map_s 64
@@ -10,11 +10,13 @@
 #define PI2 (0.5 * PI)
 #define PI3 (1.5 * PI)
 #define DR 0.0174533
+#define MAP_SCALE 0.25
 
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -33,6 +35,20 @@ typedef struct SDL_Instance
 	SDL_Window *win;
 	SDL_Renderer *ren;
 } SDL_Instance;
+
+/**
+ * struct btn_keys - structure for event keys
+ * @w: up key
+ * @a: down key
+ * @d: right key
+ * @a: left key
+ *
+ * Description: structure for handling movement & rotation
+ **/
+typedef struct btn_keys
+{
+	int w, a, d, s, e, x;
+} btn_keys;
 
 /**
  * struct player_s - struburte for the player
@@ -55,11 +71,15 @@ extern player_t player;
 void init_game(void);
 void display(SDL_Instance instance);
 
-/** window **/
+/** input **/
 int poll_events(SDL_Instance instance);
-void handle_key_down(SDL_Event event, SDL_Instance instance);
-int init_instance(SDL_Instance *in);
+void handle_key_down(SDL_Instance instance);
+void key_up(SDL_Event ev);
+void key_down(SDL_Event ev);
 void handle_door(void);
+
+/** window **/
+int init_instance(SDL_Instance *in);
 float FixAng(float a);
 
 /** draw **/
@@ -76,6 +96,9 @@ int hit_wall(float rx, float ry);
 void horizontal_collision(float ray_a, float *d, float *hx, float *hy, int *h);
 void vertical_collision(float ray_a, float *vd, float *vx, float *vy, int *v);
 float find_distance(float ax, float ay, float bx, float by);
+
+/** draw2 **/
+void add_weapon(SDL_Instance ins);
 
 /** texture **/
 float get_texture(int idx);

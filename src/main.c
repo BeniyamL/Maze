@@ -38,9 +38,10 @@ int main(void)
  **/
 void display(SDL_Instance instance)
 {
-	draw_map(instance);
 	ray_cast(instance);
+	draw_map(instance);
 	display_player(instance);
+	add_weapon(instance);
 }
 
 /**

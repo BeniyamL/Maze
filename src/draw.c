@@ -12,15 +12,15 @@ void display_player(SDL_Instance instance)
 	SDL_Rect rect;
 	float x0, y0, x1, y1;
 
-	rect.x = player.x, rect.y = player.y;
-	rect.w = player.w, rect.h = player.w;
+	rect.x = player.x * MAP_SCALE, rect.y = player.y * MAP_SCALE;
+	rect.w = player.w * MAP_SCALE, rect.h = player.w * MAP_SCALE;
 	SDL_SetRenderDrawColor(instance.ren, 255, 255, 0, 0);
 	SDL_RenderFillRect(instance.ren, &rect);
 
-	x0 = player.x;
-	y0 = player.y;
-	x1 = player.x + player.dx * 20;
-	y1 = player.y + player.dy * 20;
+	x0 = player.x * MAP_SCALE;
+	y0 = player.y * MAP_SCALE;
+	x1 = (player.x + player.dx * 20) * MAP_SCALE;
+	y1 = (player.y + player.dy * 20) * MAP_SCALE;
 	SDL_RenderDrawLine(instance.ren, x0, y0, x1, y1);
 }
 
@@ -43,8 +43,10 @@ void draw_map(SDL_Instance ins)
 				SDL_SetRenderDrawColor(ins.ren, 255, 255, 255, 0);
 			else
 				SDL_SetRenderDrawColor(ins.ren, 0, 0, 0, 0);
-			rect.x = (y * map_s) + 1, rect.y = (x * map_s) + 1;
-			rect.w = map_s - 1, rect.h = map_s - 1;
+			rect.x = (y * map_s * MAP_SCALE) + 1;
+			rect.y = (x * map_s * MAP_SCALE) + 1;
+			rect.w = (map_s * MAP_SCALE) - 1;
+			rect.h = (map_s * MAP_SCALE) - 1;
 			SDL_RenderFillRect(ins.ren, &rect);
 		}
 	}
@@ -67,14 +69,18 @@ void draw_scene(SDL_Instance ins, int n, float h, float ray_a, float shd,
 		float rx, float ry, int m_txr)
 {
 	float line, a = FixAng(player.a - ray_a), of, tx_y = 0, tx_x, tx_s, c;
-	int j, i, idx;
+	int j, i, idx, s = (int) SCREEN_WIDTH / 60;
 
 	h = h * cos(a);
-	line = (map_s * 350) / h;
+	line = (map_s * 420) / h;
 	tx_s = 32.0 / (float)line;
-	of = 200 - (line / 2);
-	if (line > 350)
-		line = 350, tx_y = (line - 350) / 2.0;
+	of = 280 - (line / 2);
+	if (line > 420)
+		line = 420, tx_y = (line - 420) / 2.0;
+	/**
+	if (line > SCREEN_WIDTH)
+	*	line = SCREEN_WIDTH, tx_y = (line - SCREEN_WIDTH) / 2.0;
+	**/
 	tx_y = (tx_y * tx_s) + (m_txr * 32);
 	if (shd == 1)
 	{
@@ -100,8 +106,8 @@ void draw_scene(SDL_Instance ins, int n, float h, float ray_a, float shd,
 			SDL_SetRenderDrawColor(ins.ren, c / 2.0, c / 2.0, c, 0);
 		if (m_txr == 3)
 			SDL_SetRenderDrawColor(ins.ren, c / 2.0, c, c / 2.0, 0);
-		for (j = n * 8; j < (n * 8) + 8; j++)
-			SDL_RenderDrawPoint(ins.ren, j + 530, i + of);
+		for (j = n * s; j < (n * s) + s; j++)
+			SDL_RenderDrawPoint(ins.ren, j, i + of);
 		tx_y += tx_s;
 	}
 	draw_floor(ins, of, n, line, ray_a);
@@ -119,11 +125,11 @@ void draw_scene(SDL_Instance ins, int n, float h, float ray_a, float shd,
  **/
 void draw_floor(SDL_Instance ins, float ln_off, int n, float line, float ra)
 {
-	int i, j, idx;
+	int i, j, idx, s = (int) SCREEN_WIDTH / 60;
 	/** int mp **/
 	float dy, fix, tx_x, tx_y, clr, pa = player.a;
 
-	for (i = ln_off + line; i < 520; i++)
+	for (i = ln_off + line; i < SCREEN_HEIGHT; i++)
 	{
 		dy = i - (520 / 2.0), fix = cos(FixAng(pa - ra));
 		tx_x = player.x / 2.0 + cos(ra) * 158 * 32 / dy / fix;
@@ -136,8 +142,8 @@ void draw_floor(SDL_Instance ins, float ln_off, int n, float line, float ra)
 		idx = ((int)(tx_y) & 31) * 32 + ((int)(tx_x) & 31);
 		clr = (get_texture(idx) * 255) * 0.7;
 		SDL_SetRenderDrawColor(ins.ren, clr / 1.3, clr / 1.3, clr, 0);
-		for (j = n * 8; j < (n * 8) + 8; j++)
-			SDL_RenderDrawPoint(ins.ren, j + 530, i);
+		for (j = n * s; j < (n * s) + s; j++)
+			SDL_RenderDrawPoint(ins.ren, j, i);
 	}
 }
 

@@ -9,19 +9,26 @@ player_t player;
  **/
 void ray_cast(SDL_Instance ins)
 {
-	float ray_a, hx, hy, hd = 1000000, shade = 1;
+	float ray_a, hx, hy, hd = 1000000, shade = 1, px, py, rx, ry;
 	float vx, vy, vd = 1000000, disT, ray_x, ray_y;
 	int i, vtx = 0, htx = 0;
-	SDL_Rect top, bottom;
+	SDL_Rect top, map;
+	/** bottom **/;
 
-	top.x = 530, top.y = 0, top.w = 480, top.h = 200;
+	top.x = 0, top.y = 0, top.w = SCREEN_WIDTH, top.h = 400;
+	map.x = 0, map.y = 0, map.w = (map_x * (map_s * MAP_SCALE));
+	map.h = (map_y * (map_s * MAP_SCALE));
 	SDL_SetRenderDrawColor(ins.ren, 30, 144, 255, 0);
 	SDL_RenderFillRect(ins.ren, &top);
 
-	bottom.x = 530, bottom.y = 200, bottom.w = 480, bottom.h = 312;
+	SDL_SetRenderDrawColor(ins.ren, 76, 76, 76, 0);
+	SDL_RenderFillRect(ins.ren, &map);
+
+	/**
+	bottom.x = 0, bottom.y = 400, bottom.w = SCREEN_WIDTH, bottom.h = 312;
 	SDL_SetRenderDrawColor(ins.ren, 0, 153, 0, 0);
 	SDL_RenderFillRect(ins.ren, &bottom);
-
+	**/
 	ray_a = player.a - DR * 30;
 	ray_a = FixAng(ray_a);
 	for (i = 0; i < 60; i++)
@@ -41,7 +48,9 @@ void ray_cast(SDL_Instance ins)
 			htx = vtx;
 		}
 		SDL_SetRenderDrawColor(ins.ren, 155, 0, 0, 0);
-		SDL_RenderDrawLine(ins.ren, player.x, player.y, ray_x, ray_y);
+		px = player.x * MAP_SCALE, py = player.y * MAP_SCALE;
+		rx = ray_x * MAP_SCALE, ry = ray_y * MAP_SCALE;
+		SDL_RenderDrawLine(ins.ren, px, py, rx, ry);
 		draw_scene(ins, i, disT, ray_a, shade, ray_x, ray_y, htx);
 		ray_a += DR;
 		ray_a = FixAng(ray_a);
