@@ -77,10 +77,6 @@ void draw_scene(SDL_Instance ins, int n, float h, float ray_a, float shd,
 	of = 280 - (line / 2);
 	if (line > 420)
 		line = 420, tx_y = (line - 420) / 2.0;
-	/**
-	if (line > SCREEN_WIDTH)
-	*	line = SCREEN_WIDTH, tx_y = (line - SCREEN_WIDTH) / 2.0;
-	**/
 	tx_y = (tx_y * tx_s) + (m_txr * 32);
 	if (shd == 1)
 	{

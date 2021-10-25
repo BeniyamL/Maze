@@ -51,3 +51,22 @@ void setmap_value(int x, int y, int val)
 {
 	map[y][x] = val;
 }
+/**
+ * make_map - function to make map from the given file
+ * argv: the array of the given argument
+ *
+ * Return: nothing
+ **/
+void make_map(char **argv)
+{
+	int i, j;
+	int **file_map;
+
+	file_map = get_altitude(argv);
+	for (i = 0; i < map_x; i++)
+	{
+		for (j = 0; j < map_y; j++)
+			map[i][j] = file_map[i][j];
+	}
+	free_numbers(file_map);
+}

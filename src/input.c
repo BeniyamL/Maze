@@ -2,7 +2,7 @@
 
 player_t player;
 btn_keys btnkeys;
- 
+
 /**
  * poll_events - function to handle events
  * @ins: the istance of SDL
@@ -41,7 +41,7 @@ void handle_key_down(SDL_Instance ins)
 	int mx, my, px = player.x / map_s, py = player.y / map_s;
 	int xo = 0, yo = 0;
 
-	xo = (player.dx < 0) ? -10 : 10, yo = (player.dy < 0) ? -10 : 10;
+	xo = (player.dx < 0) ? -20 : 20, yo = (player.dy < 0) ? -20 : 20;
 	if (btnkeys.a == 1)
 	{
 		player.a -= 0.1, player.a = FixAng(player.a);
@@ -86,11 +86,14 @@ void handle_door(void)
 {
 	int px_add_off, py_add_off, mx, my, xo, yo;
 
-	xo = (player.dx < 0) ? -25 : 25;
-	yo = (player.dy < 0) ? -25 : 25;
+	xo = (player.dx < 0) ? -30 : 30;
+	yo = (player.dy < 0) ? -50 : 50;
 	px_add_off = (player.x + xo) / map_s;
 	py_add_off = (player.y + yo) / map_s;
 	mx = px_add_off, my = py_add_off;
+	/**
+	 *printf("mx=%d, my=%d dx=%f dy=%f\n", mx, my, player.dx, player.dy);
+	**/
 	if (getmap_value(mx, my, 0) == 4)
 		setmap_value(mx, my, 0);
 }

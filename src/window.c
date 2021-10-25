@@ -31,7 +31,7 @@ int init_instance(SDL_Instance *in)
 		SDL_Quit();
 		return (1);
 	}
-	if (IMG_Init(IMG_INIT_JPG) != IMG_INIT_JPG)
+	if (IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG)
 	{
 		fprintf(stderr, "Failed to initialize SDL_image.\n");
 		return (1);

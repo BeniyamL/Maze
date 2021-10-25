@@ -3,6 +3,7 @@
 
 #define SCREEN_WIDTH 1080
 #define SCREEN_HEIGHT 600
+#define gun_scale 0.35
 #define map_x 8
 #define map_y 8
 #define map_s 64
@@ -11,6 +12,8 @@
 #define PI3 (1.5 * PI)
 #define DR 0.0174533
 #define MAP_SCALE 0.25
+#define num_enemy 5
+#define FOV (0.5 * PI)
 
 #include <stdlib.h>
 #include <stddef.h>
@@ -22,6 +25,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <math.h>
+#include <time.h>
 
 /**
  * struct SDL_Instance - structure for sdl instance
@@ -42,6 +46,9 @@ typedef struct SDL_Instance
  * @a: down key
  * @d: right key
  * @a: left key
+ * @e: key for open door
+ * @x: key for exit
+ * @s: down key
  *
  * Description: structure for handling movement & rotation
  **/
@@ -66,6 +73,19 @@ typedef struct player_s
 } player_t;
 
 extern player_t player;
+
+/**
+ * struct enemy_s - structure for the enemy
+ * @x: the x coordinate postion
+ * @y: the y coordinate position
+ *
+ **/
+typedef struct enemy_s
+{
+	float x, y;
+} enemy_t;
+
+extern enemy_t enemy;
 
 /** main.c **/
 void init_game(void);
@@ -99,6 +119,8 @@ float find_distance(float ax, float ay, float bx, float by);
 
 /** draw2 **/
 void add_weapon(SDL_Instance ins);
+void add_enemy(SDL_Instance ins, int j);
+float find_viewdistance(void);
 
 /** texture **/
 float get_texture(int idx);
@@ -106,8 +128,10 @@ float get_texture(int idx);
 /** map **/
 void setmap_value(int mx, int my, int val);
 int getmap_value(int x, int y, int mp);
+void free_numbers(int **numbers);
+void make_map(char **argv);
 
-/** get_altitude **/
+/** get_map **/
 int _atoi(char *s);
 char *_strdup(char *str);
 int _length(char *str);
