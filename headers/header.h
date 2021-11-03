@@ -15,7 +15,7 @@
 #define num_enemy 5
 #define FOV (PI / 3)
 #define RAD_DEG 57.296
-#define num_rays 120
+#define num_rays 60
 
 #include <stdlib.h>
 #include <stddef.h>

@@ -4,7 +4,7 @@ enemy_t enemies[num_enemy] = {
 	{79.4, 84.4, 0, "images/enm.png"},
 	{250.5, 100, 5, "images/enm222.png"},
 	{390.5, 205, 5, "images/enm33.png"},
-	{430, 384, 5, "images/enm555.png"},
+	{430, 384, 5, "images/enm.png"},
 	{80.3, 445.7, 5, "images/enm111.png"}
 };
 
@@ -84,11 +84,11 @@ void add_enemy(SDL_Instance ins)
 			sx = tan(e_a) * DPP;
 			/** find the screen postion of the sprite **/
 			en.x = (SCREEN_WIDTH / 2) + sx - (e_swidth / 2);
-			ex = en.x, en.y = (SCREEN_HEIGHT - e_swidth) / 2.0f;
+			ex = e_d / 4, en.y = (SCREEN_HEIGHT - e_swidth) / 2.0f;
 			en.w = e_swidth, en.h = e_swidth;
 			/** if the sprite is not far from the player **/
 			if (texture && ex > 0 && ex < num_rays &&
-				en.h < buff[(int)ex])
+				en.y < buff[(int)ex])
 				SDL_RenderCopy(ins.ren, texture, NULL, &en);
 		}
 		/** free & destroy the surface **/
