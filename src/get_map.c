@@ -46,7 +46,8 @@ int _atoi(char *s)
 char *_strdup(char *str)
 {
 	/** variable for string duplication **/
-	char *dup, int i = 0, strlength = 0;
+	char *dup; 
+	int i = 0, strlength = 0;
 
 	if (str == NULL)
 		return (NULL);
