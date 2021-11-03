@@ -13,7 +13,9 @@
 #define DR 0.0174533
 #define MAP_SCALE 0.25
 #define num_enemy 5
-#define FOV (0.5 * PI)
+#define FOV (PI / 3)
+#define RAD_DEG 57.296
+#define num_rays 120
 
 #include <stdlib.h>
 #include <stddef.h>
@@ -78,14 +80,17 @@ extern player_t player;
  * struct enemy_s - structure for the enemy
  * @x: the x coordinate postion
  * @y: the y coordinate position
- *
+ * @z: the z coordinate
+ * @path: the given path of the image
  **/
 typedef struct enemy_s
 {
-	float x, y;
+	float x, y, z;
+	char *path;
 } enemy_t;
 
 extern enemy_t enemy;
+extern float buff[num_rays];
 
 /** main.c **/
 void init_game(void);
@@ -119,8 +124,10 @@ float find_distance(float ax, float ay, float bx, float by);
 
 /** draw2 **/
 void add_weapon(SDL_Instance ins);
-void add_enemy(SDL_Instance ins, int j);
+void add_enemy(SDL_Instance ins);
 float find_viewdistance(void);
+void draw_sprite_map(SDL_Instance ins);
+void sort_sprite(int *sprite, double *spr_dis, int n);
 
 /** texture **/
 float get_texture(int idx);

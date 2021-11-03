@@ -11,10 +11,12 @@ enemy_t enemy;
  **/
 int main(int argc, char **argv)
 {
+	/** instance variable **/
 	SDL_Instance instance;
-
+	/** create & initialize the window **/
 	if (init_instance(&instance) != 0)
 		return (1);
+	/** initialize the game **/
 	init_game();
 	if (argc > 1)
 		make_map(argv);
@@ -23,12 +25,14 @@ int main(int argc, char **argv)
 		SDL_SetRenderDrawColor(instance.ren, 76, 76, 76, 0);
 		SDL_RenderClear(instance.ren);
 
+		/** handle the input keys from the user **/
 		if (poll_events(instance) == 1)
 			break;
-
+		/** draw the wall, ceiling, map & sprite **/
 		display(instance);
 		SDL_RenderPresent(instance.ren);
 	}
+	/** destroy the renderer & the window & quit**/
 	SDL_DestroyRenderer(instance.ren);
 	SDL_DestroyWindow(instance.win);
 	SDL_Quit();
@@ -43,15 +47,12 @@ int main(int argc, char **argv)
  **/
 void display(SDL_Instance instance)
 {
-	int j;
-
 	ray_cast(instance);
+	add_enemy(instance);
 	draw_map(instance);
 	display_player(instance);
 	add_weapon(instance);
-
-	for (j = 1; j <= 1; j++)
-		add_enemy(instance, j);
+	draw_sprite_map(instance);
 }
 
 /**
@@ -61,11 +62,7 @@ void display(SDL_Instance instance)
  **/
 void init_game(void)
 {
-	/**
-	*float rx, ry;
-	*int ex, ey;
-	**/
-
+	/** initialize the player x, y, width, heigth and deltas **/
 	player.x = 150;
 	player.y = 400;
 	player.w = 12;
@@ -73,18 +70,4 @@ void init_game(void)
 	player.a = PI3;
 	player.dx = cos(player.a) * 5;
 	player.dy = sin(player.a) * 5;
-
-	enemy.x = 500;
-	enemy.y = 500;
-	/**
-	*srand(time(NULL));
-	*rx = ((SCREEN_WIDTH - 0) * ((float)rand() / RAND_MAX)) + 0;
-	*ex = floor(rx / map_s);
-	*ry = ((SCREEN_HEIGHT - 0) * ((float)rand() / RAND_MAX)) + 0;
-	*ey = floor(ry / map_s);
-	*if (getmap_value(ex, ey, 0) == 0)
-	*	enemy.x = rx, enemy.y = ry;
-	*else
-	*	enemy.x = 200, enemy.y = 200;
-	**/
 }

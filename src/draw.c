@@ -9,14 +9,18 @@ player_t player;
  **/
 void display_player(SDL_Instance instance)
 {
+	/** variables for the intial & finall coordiantes & for SDL_rect **/
 	SDL_Rect rect;
 	float x0, y0, x1, y1;
 
+	/** convert the player postion into map scale **/
 	rect.x = player.x * MAP_SCALE, rect.y = player.y * MAP_SCALE;
 	rect.w = player.w * MAP_SCALE, rect.h = player.w * MAP_SCALE;
+	/** draw the rectangle of the player **/
 	SDL_SetRenderDrawColor(instance.ren, 255, 255, 0, 0);
 	SDL_RenderFillRect(instance.ren, &rect);
 
+	/** draw the line sight of the player **/
 	x0 = player.x * MAP_SCALE;
 	y0 = player.y * MAP_SCALE;
 	x1 = (player.x + player.dx * 20) * MAP_SCALE;
@@ -32,6 +36,7 @@ void display_player(SDL_Instance instance)
  **/
 void draw_map(SDL_Instance ins)
 {
+	/** variable for x & y coordinate of the map **/
 	int x, y;
 	SDL_Rect rect;
 
@@ -39,10 +44,12 @@ void draw_map(SDL_Instance ins)
 	{
 		for (y = 0; y < map_y; y++)
 		{
+			/** set the wall color to white & empty to black **/
 			if (getmap_value(y, x, 0) > 0)
 				SDL_SetRenderDrawColor(ins.ren, 255, 255, 255, 0);
 			else
 				SDL_SetRenderDrawColor(ins.ren, 0, 0, 0, 0);
+			/** draw the minmized map **/
 			rect.x = (y * map_s * MAP_SCALE) + 1;
 			rect.y = (x * map_s * MAP_SCALE) + 1;
 			rect.w = (map_s * MAP_SCALE) - 1;
@@ -68,16 +75,17 @@ void draw_map(SDL_Instance ins)
 void draw_scene(SDL_Instance ins, int n, float h, float ray_a, float shd,
 		float rx, float ry, int m_txr)
 {
+	/** variables for wall drawing **/
 	float line, a = FixAng(player.a - ray_a), of, tx_y = 0, tx_x, tx_s, c;
 	int j, i, idx, s = (int) SCREEN_WIDTH / 60;
 
-	h = h * cos(a);
-	line = (map_s * 420) / h;
-	tx_s = 32.0 / (float)line;
+	h = h * cos(a), line = (map_s * 420) / h, tx_s = 32.0 / (float)line;
+	/** line offset * line limit **/
 	of = 280 - (line / 2);
 	if (line > 420)
 		line = 420, tx_y = (line - 420) / 2.0;
 	tx_y = (tx_y * tx_s) + (m_txr * 32);
+	/** shade the wall if it is 1 **/
 	if (shd == 1)
 	{
 		tx_x = (int) (rx / 2.0) % 32;
@@ -90,10 +98,10 @@ void draw_scene(SDL_Instance ins, int n, float h, float ray_a, float shd,
 		if (ray_a > PI2 && ray_a < PI3)
 			tx_x = 31 - tx_x;
 	}
+	/** draw the wall with the above specification **/
 	for (i = 0; i < line; i++)
 	{
-		idx = (int)(tx_y) * 32 + (int)tx_x;
-		c = (get_texture(idx) * 255) * shd;
+		idx = (int)(tx_y) * 32 + (int)tx_x, c = (get_texture(idx) * 255) * shd;
 		if (m_txr == 0)
 			SDL_SetRenderDrawColor(ins.ren, c, c / 2.0, c / 2.0, 0);
 		if (m_txr == 1)
@@ -106,8 +114,7 @@ void draw_scene(SDL_Instance ins, int n, float h, float ray_a, float shd,
 			SDL_RenderDrawPoint(ins.ren, j, i + of);
 		tx_y += tx_s;
 	}
-	draw_floor(ins, of, n, line, ray_a);
-	/** draw_roof(ins, of, n, line, ray_a); **/
+	draw_floor(ins, of, n, line, ray_a); /** draw the ceiling **/
 }
 /**
  * draw_floor - function to draw a floor)
@@ -121,10 +128,11 @@ void draw_scene(SDL_Instance ins, int n, float h, float ray_a, float shd,
  **/
 void draw_floor(SDL_Instance ins, float ln_off, int n, float line, float ra)
 {
+	/** variable for the floor **/
 	int i, j, idx, s = (int) SCREEN_WIDTH / 60;
-	/** int mp **/
 	float dy, fix, tx_x, tx_y, clr, pa = player.a;
 
+	/** start from where the wall stops & draw the floor **/
 	for (i = ln_off + line; i < SCREEN_HEIGHT; i++)
 	{
 		dy = i - (520 / 2.0), fix = cos(FixAng(pa - ra));
@@ -155,9 +163,11 @@ void draw_floor(SDL_Instance ins, float ln_off, int n, float line, float ra)
  **/
 void draw_roof(SDL_Instance ins, float ln_off, int n, float line, float ra)
 {
+	/** variables for the ceiling **/
 	int i, j, idx;
 	float dy, fix, tx_x, tx_y, c, pa = player.a;
 
+	/** starts from the begenning upt to the wall & draw the ceiling **/
 	for (i = ln_off + line; i < 500; i++)
 	{
 		dy = i - (500 / 2.0), fix = cos(FixAng(pa - ra));

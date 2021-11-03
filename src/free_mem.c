@@ -8,11 +8,14 @@
  **/
 void free_grid(SDL_Point ***grid)
 {
+	/** variables for x & y coordinate **/
 	int i, j;
 
+	/** free each row **/
 	for (j = 0; j < map_x; j++)
 		free(grid[0][j]);
 	free(grid[0]);
+	/** free each column **/
 	for (i = 0; i < map_y; i++)
 		free(grid[1][i]);
 	free(grid[1]);
@@ -29,6 +32,7 @@ void free_tokens(char **tokens)
 {
 	char **tmp = tokens;
 
+	/** for a givn tokens free each token **/
 	if (tokens)
 	{
 		while (*tokens)
@@ -44,8 +48,10 @@ void free_tokens(char **tokens)
  **/
 void free_cols(char ***cols)
 {
+	/** temp variable to clear the row & column **/
 	int i, j;
 
+	/** for each row, free each column **/
 	for (i = 0; i < map_x; i++)
 	{
 		for (j = 0; j < map_y; j++)
@@ -65,6 +71,7 @@ void free_numbers(int **numbers)
 {
 	int i;
 
+	/** for each number value in the map x, free them **/
 	for (i = 0; i < map_x; i++)
 		free(numbers[i]);
 	free(numbers);
